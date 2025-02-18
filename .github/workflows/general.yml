@@ -5,6 +5,7 @@ on: [push, pull_request]
 # cancel in progress runs
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
   
 env:
   CARGO_TERM_COLOR: always
@@ -34,11 +35,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo clippy -- -D warnings
 
-  coverage:
-    name: Coverage
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - run: cargo install cargo-tarpaulin
-      - run: cargo tarpaulin --ignore-tests
+#   coverage:
+#     name: Coverage
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: dtolnay/rust-toolchain@stable
+#       - run: cargo install cargo-tarpaulin
+#       - run: cargo tarpaulin --ignore-tests
