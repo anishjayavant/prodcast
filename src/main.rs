@@ -18,7 +18,7 @@ fn mutate_x_ptr(x: &mut i32) {
     println!("x = {} in the mutate_x_ptr function", x);
 }
 fn mutate_x_val(mut x: i32) {
-    x = x + 1;
+    x += 1;
     println!("x = {} in the mutate_x _val function", x);
 }
 #[cfg(test)]
@@ -41,4 +41,3 @@ mod tests {
         assert_eq!(x, 11);
     }
 }
-
