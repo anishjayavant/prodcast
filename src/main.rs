@@ -26,7 +26,7 @@ fn mutate_x_val(mut x: i32) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use shapes::models::{Shape, Circle, Rectangle};
+    use shapes::models::{Circle, Rectangle, Shape};
 
     #[test]
     fn test_mutate_x_val() {
