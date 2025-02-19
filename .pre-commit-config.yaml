@@ -1,7 +1,7 @@
 repos:
   - repo: https://github.com/doublify/pre-commit-rust
-    rev: v1.5.0  # Use the latest stable version
+    rev: v1.0  # Use the latest stable version
     hooks:
       - id: cargo-check
-      - id: cargo-fmt
-      - id: cargo-clippy
+      - id: fmt
+      - id: clippy
