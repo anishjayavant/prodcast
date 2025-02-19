@@ -4,7 +4,7 @@ use shapes::models::{Circle, Rectangle, Shape};
 fn main() {
     println!("Hello, world!");
     println!("I'm a Rustacean!");
-    let x:i32 = 5;
+    let x: i32 = 5;
     println!("x = {} before the mutate_x_val fn", x);
     mutate_x_val(x);
     println!("x = {} after the mutate_x_val function", x);
