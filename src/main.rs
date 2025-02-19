@@ -1,9 +1,10 @@
 mod shapes;
+use shapes::models::{Circle, Rectangle, Shape};
 
 fn main() {
     println!("Hello, world!");
     println!("I'm a Rustacean!");
-    let x = 5 + 5;
+    let x:i32 = 5;
     println!("x = {} before the mutate_x_val fn", x);
     mutate_x_val(x);
     println!("x = {} after the mutate_x_val function", x);
@@ -12,6 +13,15 @@ fn main() {
     println!("x = {} before the mutate_x_ptr function", x);
     mutate_x_ptr(&mut x);
     println!("x = {} after the mutate_x_ptr function", x);
+
+    // try some stuff wth shapes
+    let circle = Circle::new(1.0).unwrap();
+    println!("Circle area: {}", circle.area());
+    println!("Circle perimeter: {}", circle.perimeter());
+
+    let rect = Rectangle::new(2.0, 3.0).unwrap();
+    println!("Rectangle area: {}", rect.area());
+    println!("Rectangle perimeter: {}", rect.perimeter());
 }
 
 // Function to add 1 to x no return
