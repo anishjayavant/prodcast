@@ -2,17 +2,21 @@ mod shapes;
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use shapes::models::{Circle, Rectangle, Shape};
 
+/// Greet the user
 async fn greet(req: HttpRequest) -> impl Responder {
     let name = req.match_info().get("name").unwrap_or("World");
     hello();
     format!("Hello {}!", &name)
 }
 
+/// Health check endpoint
 async fn healthz() -> impl Responder {
     HttpResponse::Ok()
 }
 
+/// Hello world function
 fn hello() {
+    // println! is a macro that prints to the console
     println!("Hello, world!");
     println!("I'm a Rustacean!");
     let x: i32 = 5;
@@ -47,11 +51,13 @@ async fn main() -> std::io::Result<()> {
     .await
 }
 
-// Function to add 1 to x no return
+// Function to add 1 to x as pointer no return
 fn mutate_x_ptr(x: &mut i32) {
     *x += 1;
     println!("x = {} in the mutate_x_ptr function", x);
 }
+
+// Function to add 1 to x as val no return
 fn mutate_x_val(mut x: i32) {
     x += 1;
     println!("x = {} in the mutate_x _val function", x);
@@ -60,6 +66,7 @@ fn mutate_x_val(mut x: i32) {
 mod tests {
     use super::*;
 
+    /// Tests that mutate_x_val does not change the value of x in the calling function
     #[test]
     fn test_mutate_x_val() {
         let x = 10;
@@ -68,6 +75,7 @@ mod tests {
         assert_eq!(x, 10);
     }
 
+    /// Tests that mutate_x_ptr changes the value of x in the calling function
     #[test]
     fn test_mutate_x_ptr() {
         let mut x = 10;
