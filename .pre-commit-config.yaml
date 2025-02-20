@@ -4,11 +4,15 @@ repos:
     hooks:
       - id: cargo-check
       - id: fmt
-      - id: clippy
   - repo: local
     hooks:
       - id: cargo-doc-check
         name: cargo-doc-check
         entry: zsh -c "RUSTDOCFLAGS='-D warnings' cargo doc --no-deps --document-private-items"
+        language: system
+        pass_filenames: false
+      - id: cargo-clippy
+        name: cargo-clippy
+        entry: zsh -c "cargo clippy --all-targets --all-features -- -D warnings"
         language: system
         pass_filenames: false
