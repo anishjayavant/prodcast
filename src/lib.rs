@@ -1,5 +1,6 @@
 //! lib.rs  
 pub mod shapes;
+use actix_web::dev::Server;
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use shapes::models::{Circle, Rectangle, Shape};
 
@@ -41,15 +42,16 @@ fn hello() {
 }
 
 /// Run the server
-pub async fn run() -> std::io::Result<()> {
-    HttpServer::new(|| {
+pub fn run() -> Result<Server, std::io::Error> {
+    let server = HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(greet))
             .route("/healthz", web::get().to(healthz))
     })
     .bind("127.0.0.1:8000")?
-    .run()
-    .await
+    .run();
+    // return the server
+    Ok(server)
 }
 
 // Function to add 1 to x as pointer no return
