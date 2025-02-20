@@ -1,7 +1,14 @@
 mod shapes;
+use actix_web::{web, App, HttpRequest, HttpServer, Responder};
 use shapes::models::{Circle, Rectangle, Shape};
 
-fn main() {
+async fn greet(req: HttpRequest) -> impl Responder {
+    let name = req.match_info().get("name").unwrap_or("World");
+    hello();
+    format!("Hello {}!", &name)
+}
+
+fn hello() {
     println!("Hello, world!");
     println!("I'm a Rustacean!");
     let x: i32 = 5;
@@ -22,6 +29,18 @@ fn main() {
     let rect = Rectangle::new(2.0, 3.0).unwrap();
     println!("Rectangle area: {}", rect.area());
     println!("Rectangle perimeter: {}", rect.perimeter());
+}
+
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(greet))
+            .route("/{name}", web::get().to(greet))
+    })
+    .bind("127.0.0.1:8000")?
+    .run()
+    .await
 }
 
 // Function to add 1 to x no return
