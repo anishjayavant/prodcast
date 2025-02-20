@@ -1,3 +1,4 @@
+//! lib.rs  
 pub mod shapes;
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use shapes::models::{Circle, Rectangle, Shape};
