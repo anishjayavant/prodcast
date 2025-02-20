@@ -71,7 +71,7 @@ jobs:
       - name: Toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Clippy
-        run: cargo clippy -- -D warnings
+        run: cargo clippy --workspace --all-targets --no-deps -- -D warnings
 
   checkdocs:
     name: CheckDocs
@@ -92,4 +92,5 @@ jobs:
       - name: Toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Check Docs
-        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --document-private-items
+
