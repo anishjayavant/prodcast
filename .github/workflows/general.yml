@@ -1,4 +1,4 @@
-name: Rust
+name: Prodcast
 
 on: [push, pull_request]
 
@@ -15,9 +15,23 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - run: cargo test --all-features
+    - name: Checkout
+      uses: actions/checkout@v4 
+    - name: Cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          cargo-${{ runner.os }}- 
+    - name: Toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - run: cargo test --all-features    
 
   fmt:
     name: Rustfmt
@@ -25,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo fmt --all -- --check
+      - run: cargo fmt --all -- --check      
 
   clippy:
     name: Clippy
