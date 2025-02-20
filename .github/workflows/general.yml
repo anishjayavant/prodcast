@@ -31,20 +31,37 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    - run: cargo test --all-features    
+    - name: Test
+      run: cargo test --all-features    
 
   fmt:
-    name: Rustfmt
+    name: Fmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - run: cargo fmt --all -- --check      
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Fmt
+        run: cargo fmt --all -- --check      
 
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - run: cargo clippy -- -D warnings
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            cargo-${{ runner.os }}- 
+      - name: Toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Clippy
+        run: cargo clippy -- -D warnings
