@@ -23,5 +23,5 @@ async fn healthz_works() {
 // Launch our application in the background ~somehow~
 fn spawn_app() {
     let server = prodcast::run().expect("Failed to bind address");
-    tokio::spawn(server);
+    let _ = tokio::spawn(server);
 }
