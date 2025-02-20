@@ -1,6 +1,13 @@
 name: Prodcast
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - releases/**
+  pull_request:
+    branches:
+      - main
 
 # cancel in progress runs
 concurrency:
@@ -55,3 +62,14 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Clippy
         run: cargo clippy -- -D warnings
+
+  checkdocs:
+    name: CheckDocs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Check Docs
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps

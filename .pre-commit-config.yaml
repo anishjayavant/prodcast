@@ -1,7 +1,14 @@
 repos:
   - repo: https://github.com/doublify/pre-commit-rust
-    rev: v1.0  # Use the latest stable version
+    rev: v1.0 # Use the latest stable version
     hooks:
       - id: cargo-check
       - id: fmt
-      - id: clippy
+      - id: clippy      
+  - repo: local
+    hooks:
+      - id: cargo-doc-check
+        name: cargo-doc-check
+        entry: zsh -c "RUSTDOCFLAGS='-D warnings' cargo doc --no-deps"
+        language: system
+        pass_filenames: false
