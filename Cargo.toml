@@ -14,3 +14,6 @@ path = "src/main.rs"
 [dependencies]
 actix-web = "4.9.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+[dev-dependencies]
+reqwest = "0.12.12"
