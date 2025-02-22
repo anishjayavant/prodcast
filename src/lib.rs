@@ -6,6 +6,11 @@ use actix_web::dev::Server;
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use shapes::models::{Circle, Rectangle, Shape};
 
+#[derive(serde::Deserialize)]
+struct FormData {
+    email: String,
+    name: String,
+}
 /// Greet the user
 async fn greet(req: HttpRequest) -> impl Responder {
     let name = req.match_info().get("name").unwrap_or("World");
@@ -16,6 +21,16 @@ async fn greet(req: HttpRequest) -> impl Responder {
 /// Health check endpoint
 async fn healthz() -> impl Responder {
     HttpResponse::Ok().finish()
+}
+
+/// Subscribe endpoint
+/// This function will subscribe a user to the service
+/// It will return a 200 if the subscription is successful
+/// It will return a 400 if the subscription is unsuccessful
+async fn subscribe(_form: web::Form<FormData>) -> impl Responder {
+    // unpack the form data and print
+    let str = format!("Hello to Prodcast {}, {}", _form.name, _form.email);
+    HttpResponse::Ok().body(str)
 }
 
 /// Hello world function
@@ -49,6 +64,7 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
         App::new()
             .route("/", web::get().to(greet))
             .route("/healthz", web::get().to(healthz))
+            .route("/subscriptions", web::post().to(subscribe))
     })
     .listen(listener)?
     .run();
