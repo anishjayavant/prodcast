@@ -1,0 +1,36 @@
+# Docker Compose file for Postgres along with sqlx CLI for database migrations
+
+version: "3.8"
+
+services:
+  # Main PostgreSQL service
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: prodcast
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: newsletter
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # sqlx CLI service using local image
+  sqlx:
+    build:
+      context: .
+      dockerfile: sqlx.Dockerfile
+    container_name: sqlx
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://prodcast:password@postgres/newsletter
+    command: >
+      sh -c "sqlx database create && sqlx migrate run"
+
+volumes:
+  postgres_data:
+    driver: local
