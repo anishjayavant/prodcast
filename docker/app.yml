@@ -1,7 +1,4 @@
 # Docker Compose file for Postgres along with sqlx CLI for database migrations
-
-version: "3.8"
-
 services:
   # Main PostgreSQL service
   postgres:
@@ -23,13 +20,14 @@ services:
       dockerfile: sqlx.Dockerfile
     container_name: sqlx
     volumes:
-      - .:/app
+      - ../migrations:/app/migrations
+    working_dir: /app
     depends_on:
       - postgres
     environment:
       DATABASE_URL: postgres://prodcast:password@postgres/newsletter
-    command: >
-      sh -c "sqlx database create && sqlx migrate run"
+    command: ["migrate", "run"]
+    restart: on-failure
 
 volumes:
   postgres_data:
