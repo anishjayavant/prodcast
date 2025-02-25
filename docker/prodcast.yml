@@ -1,4 +1,4 @@
-# Docker Compose file for Postgres along with sqlx CLI for database migrations
+# Docker Compose file for the full prodcast app, along with PostgreSQL container and migrations using sqlx CLI
 services:
   # Main PostgreSQL service
   postgres:
@@ -28,7 +28,19 @@ services:
       DATABASE_URL: postgres://prodcast:password@postgres/newsletter
     command: ["migrate", "run"]
     restart: "no"
-    
+
+  # Main prodcast app service
+  prodcast:
+    build:
+      context: ..
+      dockerfile: ./docker/prodcast.Dockerfile
+    container_name: prodcast
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - sqlx    
+
 volumes:
   postgres_data:
     driver: local
