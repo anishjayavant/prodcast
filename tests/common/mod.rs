@@ -1,2 +1,2 @@
 /// test utils folder
-pub mod test_utils;
+pub mod tests_utils;
