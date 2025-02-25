@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use prodcast::shapes::models::{Circle, Rectangle, Shape};
+    use prodcast::models::shapes::{Circle, Rectangle, Shape};
 
     /// Tests the area function for a unit circle
     #[test]

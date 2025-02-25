@@ -1,62 +1,16 @@
 //! lib.rs  
-pub mod shapes;
+//! Declare all of the sub-modules here so Rust can recognize them as part of the crate.
+pub mod app;
+pub mod config;
+pub mod models;
+pub mod routes;
 use std::net::TcpListener;
 
 use actix_web::dev::Server;
-use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
-use shapes::models::{Circle, Rectangle, Shape};
-
-#[derive(serde::Deserialize)]
-struct FormData {
-    email: String,
-    name: String,
-}
-/// Greet the user
-async fn greet(req: HttpRequest) -> impl Responder {
-    let name = req.match_info().get("name").unwrap_or("World");
-    hello();
-    format!("Hello {}!", &name)
-}
-
-/// Health check endpoint
-async fn healthz() -> impl Responder {
-    HttpResponse::Ok().finish()
-}
-
-/// Subscribe endpoint
-/// This function will subscribe a user to the service
-/// It will return a 200 if the subscription is successful
-/// It will return a 400 if the subscription is unsuccessful
-async fn subscribe(_form: web::Form<FormData>) -> impl Responder {
-    // unpack the form data and print
-    let str = format!("Hello to Prodcast {}, {}", _form.name, _form.email);
-    HttpResponse::Ok().body(str)
-}
-
-/// Hello world function
-fn hello() {
-    // println! is a macro that prints to the console
-    println!("Hello, world!");
-    println!("I'm a Rustacean!");
-    let x: i32 = 5;
-    println!("x = {} before the mutate_x_val fn", x);
-    mutate_x_val(x);
-    println!("x = {} after the mutate_x_val function", x);
-    // borrow x
-    let mut x = 5;
-    println!("x = {} before the mutate_x_ptr function", x);
-    mutate_x_ptr(&mut x);
-    println!("x = {} after the mutate_x_ptr function", x);
-
-    // try some stuff wth shapes
-    let circle = Circle::new(1.0).unwrap();
-    println!("Circle area: {}", circle.area());
-    println!("Circle perimeter: {}", circle.perimeter());
-
-    let rect = Rectangle::new(2.0, 3.0).unwrap();
-    println!("Rectangle area: {}", rect.area());
-    println!("Rectangle perimeter: {}", rect.perimeter());
-}
+use actix_web::{web, App, HttpServer};
+use routes::api::greet;
+use routes::api::healthz;
+use routes::api::subscribe;
 
 /// Run the server
 pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
@@ -70,16 +24,4 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     .run();
     // return the server
     Ok(server)
-}
-
-// Function to add 1 to x as pointer no return
-pub fn mutate_x_ptr(x: &mut i32) {
-    *x += 1;
-    println!("x = {} in the mutate_x_ptr function", x);
-}
-
-// Function to add 1 to x as val no return
-pub fn mutate_x_val(mut x: i32) {
-    x += 1;
-    println!("x = {} in the mutate_x _val function", x);
 }

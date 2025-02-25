@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use prodcast::{mutate_x_ptr, mutate_x_val};
+    use prodcast::app::lang::{mutate_x_ptr, mutate_x_val};
 
     /// Tests that mutate_x_val does not change the value of x in the calling function
     #[test]
