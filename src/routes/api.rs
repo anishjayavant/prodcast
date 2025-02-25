@@ -1,5 +1,5 @@
-use crate::models::newsletter::User;
 use crate::app::lang::hello;
+use crate::models::newsletter::User;
 use actix_web::{web, HttpRequest, HttpResponse, Responder};
 
 /// Subscribe endpoint

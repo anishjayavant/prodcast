@@ -1,9 +1,9 @@
 //! lib.rs  
 //! Declare all of the sub-modules here so Rust can recognize them as part of the crate.
+pub mod app;
+pub mod config;
 pub mod models;
 pub mod routes;
-pub mod config;
-pub mod app;
 use std::net::TcpListener;
 
 use actix_web::dev::Server;

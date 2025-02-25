@@ -1,2 +1,2 @@
-pub mod shapes;
 pub mod newsletter;
+pub mod shapes;
