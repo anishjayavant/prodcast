@@ -27,8 +27,8 @@ services:
     environment:
       DATABASE_URL: postgres://prodcast:password@postgres/newsletter
     command: ["migrate", "run"]
-    restart: on-failure
-
+    restart: "no"
+    
 volumes:
   postgres_data:
     driver: local
