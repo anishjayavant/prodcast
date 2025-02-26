@@ -4,6 +4,12 @@ use sqlx::{migrate, postgres::PgConnectOptions, Connection, Executor, PgConnecti
 use std::net::TcpListener;
 use uuid::Uuid;
 
+// Create a struct to hold the app port and test database name
+pub struct TestApp {
+    pub address: String,
+    pub database_name: String,
+}
+
 /// Creates a test database
 pub async fn create_test_database(config: &DatabaseSettings) -> Result<(), sqlx::Error> {
     let mut default_conn = create_default_connection(config).await;
@@ -45,6 +51,12 @@ pub async fn create_default_connection(config: &DatabaseSettings) -> PgConnectio
         .expect("Failed to connect to Postgres")
 }
 
+/// Create a connection pool to the test database
+pub async fn create_test_connection_pool(config: &DatabaseSettings) -> sqlx::Result<sqlx::PgPool> {
+    let connect_options = initialize_pg_connect_options(config, config.database.clone());
+    sqlx::PgPool::connect_with(connect_options).await
+}
+
 /// Initialize the Postgres connection options for tests
 pub fn initialize_pg_connect_options(
     config: &DatabaseSettings,
@@ -60,20 +72,20 @@ pub fn initialize_pg_connect_options(
 }
 
 /// Create a test configuration object
-pub fn get_test_config(port: u16, database_name: String) -> Settings {
+pub fn get_test_config(port: u16, database_name: &str) -> Settings {
     Settings {
         database: DatabaseSettings {
             host: "localhost".to_string(),
             port: 5432,
             user: "prodcast".to_string(),
             password: "password".to_string(),
-            database: database_name,
+            database: String::from(database_name),
         },
         port,
     }
 }
 
-pub async fn spawn_app() -> String {
+pub async fn spawn_app() -> TestApp {
     // We bind to port 0 to get an available port from the OS
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     // We retrieve the port assigned to us by the OS
@@ -81,7 +93,7 @@ pub async fn spawn_app() -> String {
     // Create a random db name to run tests in isolation
     let database_name = Uuid::new_v4().to_string();
     // make a configuration object for test purposes
-    let configuration = get_test_config(port, database_name);
+    let configuration = get_test_config(port, &database_name);
     // create the test database
     create_test_database(&configuration.database)
         .await
@@ -90,5 +102,8 @@ pub async fn spawn_app() -> String {
         .await
         .expect("Failed to bind address");
     tokio::spawn(server);
-    format!("http://127.0.0.1:{}", port)
+    TestApp {
+        address: format!("http://127.0.0.1:{}", port),
+        database_name: database_name.clone(),
+    }
 }

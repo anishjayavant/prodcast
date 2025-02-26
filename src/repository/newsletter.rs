@@ -43,28 +43,36 @@ impl NewsletterRepository for NewsletterPostGresRepository {
             user.name(),
             Utc::now()
         )
-        // We use `get_ref` to get an immutable reference to the `PgConnection`
-        // wrapped by `web::Data`.
         .execute(&self.connection_pool)
         .await
+        .map(|_| {
+            println!(
+                "User with name {} and email {} saved successfully",
+                user.name(),
+                user.email()
+            );
+        })
         .map_err(|e| {
             eprintln!("Failed to execute query: {:?}", e);
-            "Failed to save user".to_string()
-        })?;
-        Ok(())
+            format!(
+                "Failed to save user with name {} and email {}",
+                user.name(),
+                user.email()
+            )
+        })
     }
 
     /// Get the user from the repository
     async fn get_user(&self, email: String) -> Result<User, String> {
         // get the user from the database
         println!("Getting the user {} from the database", email);
-        let saved = sqlx::query!("SELECT email, name FROM subscriptions",)
+        sqlx::query!("SELECT email, name FROM subscriptions",)
             .fetch_one(&self.connection_pool)
             .await
+            .map(|row| User::new(row.email, row.name))
             .map_err(|e| {
                 eprintln!("Failed to execute query: {:?}", e);
                 "Failed to get user".to_string()
-            })?;
-        Ok(User::new(saved.email, saved.name))
+            })
     }
 }
