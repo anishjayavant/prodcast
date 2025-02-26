@@ -18,7 +18,7 @@ impl<T: NewsletterRepository> NewsletterAppService<T> {
     /// Save the user to the repository
     pub async fn save_user(&self, user: User) -> Result<(), String> {
         self.repository.save_user(user).await.map_err(|e| {
-            eprintln!("Failed to save user: {:?}", e);
+            log::error!("Failed to save user: {:?}", e);
             "Failed to save user".to_string()
         })
     }
@@ -26,7 +26,7 @@ impl<T: NewsletterRepository> NewsletterAppService<T> {
     /// Get the user from the repository
     pub async fn get_user(&self, email: String) -> Result<User, String> {
         self.repository.get_user(email).await.map_err(|e| {
-            eprintln!("Failed to get user: {:?}", e);
+            log::error!("Failed to get user: {:?}", e);
             "Failed to get user".to_string()
         })
     }
