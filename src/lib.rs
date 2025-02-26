@@ -10,6 +10,7 @@ use std::net::TcpListener;
 use crate::repository::newsletter::NewsletterPostGresRepository;
 use crate::service::newsletter::NewsletterAppService;
 use actix_web::dev::Server;
+use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use config::app::Settings;
 use routes::api::greet;
@@ -33,6 +34,8 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
 
     let server = HttpServer::new(move || {
         App::new()
+            // enable logger
+            .wrap(Logger::default())
             .app_data(web::Data::from(newsletter_app_service.clone()))
             .route("/", web::get().to(greet))
             .route("/healthz", web::get().to(healthz))
@@ -41,5 +44,6 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     .listen(listener)?
     .run();
     // return the server
+    log::info!("Prodcast initialized..");
     Ok(server)
 }

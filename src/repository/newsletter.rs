@@ -32,7 +32,7 @@ impl NewsletterRepository for NewsletterPostGresRepository {
     /// Save the user to the repository
     async fn save_user(&self, user: User) -> Result<(), String> {
         // save the user to the database
-        println!("Saving the user {} to the database", user.email());
+        log::info!("Saving the user {} to the database", user.email());
         sqlx::query!(
             r#"
             INSERT INTO subscriptions (id, email, name, subscribed_at)
@@ -46,14 +46,14 @@ impl NewsletterRepository for NewsletterPostGresRepository {
         .execute(&self.connection_pool)
         .await
         .map(|_| {
-            println!(
+            log::info!(
                 "User with name {} and email {} saved successfully",
                 user.name(),
                 user.email()
             );
         })
         .map_err(|e| {
-            eprintln!("Failed to execute query: {:?}", e);
+            log::error!("Failed to execute query: {:?}", e);
             format!(
                 "Failed to save user with name {} and email {}",
                 user.name(),
@@ -65,13 +65,13 @@ impl NewsletterRepository for NewsletterPostGresRepository {
     /// Get the user from the repository
     async fn get_user(&self, email: String) -> Result<User, String> {
         // get the user from the database
-        println!("Getting the user {} from the database", email);
+        log::info!("Getting the user {} from the database", email);
         sqlx::query!("SELECT email, name FROM subscriptions",)
             .fetch_one(&self.connection_pool)
             .await
             .map(|row| User::new(row.email, row.name))
             .map_err(|e| {
-                eprintln!("Failed to execute query: {:?}", e);
+                log::error!("Failed to execute query: {:?}", e);
                 "Failed to get user".to_string()
             })
     }
