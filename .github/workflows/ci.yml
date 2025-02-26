@@ -21,6 +21,16 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: prodcast
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: newsletter
+        ports:
+          - "5432:5432"
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,7 +40,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
+            target/debug/build
+            target/debug/incremental
           key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             cargo-${{ runner.os }}-
@@ -38,6 +49,10 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - name: Sqlx CLI
+        run: cargo install sqlx-cli --no-default-features --features postgres
+      - name: Migrate
+        run: DATABASE_URL=postgres://prodcast:password@localhost/newsletter sqlx migrate run
       - name: Test
         run: cargo test --all-features
 
@@ -55,6 +70,16 @@ jobs:
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: prodcast
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: newsletter
+        ports:
+          - "5432:5432"
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -64,18 +89,33 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
+            target/debug/build
+            target/debug/incremental
           key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             cargo-${{ runner.os }}-
       - name: Toolchain
         uses: dtolnay/rust-toolchain@stable
+      - name: Sqlx CLI
+        run: cargo install sqlx-cli --no-default-features --features postgres
+      - name: Migrate
+        run: DATABASE_URL=postgres://prodcast:password@localhost/newsletter sqlx migrate run
       - name: Clippy
         run: cargo clippy --workspace --all-targets --no-deps -- -D warnings
 
   checkdocs:
     name: CheckDocs
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: prodcast
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: newsletter
+        ports:
+          - "5432:5432"
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -85,12 +125,16 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
+            target/debug/build
+            target/debug/incremental
           key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             cargo-${{ runner.os }}-
       - name: Toolchain
         uses: dtolnay/rust-toolchain@stable
+      - name: Sqlx CLI
+        run: cargo install sqlx-cli --no-default-features --features postgres
+      - name: Migrate
+        run: DATABASE_URL=postgres://prodcast:password@localhost/newsletter sqlx migrate run
       - name: Check Docs
         run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --document-private-items
-

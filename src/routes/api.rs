@@ -1,6 +1,7 @@
 use crate::models::newsletter::User;
+use crate::repository::newsletter::NewsletterPostGresRepository;
 use crate::service::lang::hello;
-use crate::service::newsletter::{NewsletterAppService, UserService};
+use crate::service::newsletter::NewsletterAppService;
 use actix_web::{web, HttpRequest, HttpResponse, Responder};
 
 /// Subscribe endpoint
@@ -8,14 +9,21 @@ use actix_web::{web, HttpRequest, HttpResponse, Responder};
 /// It will return a 200 if the subscription is successful
 /// It will return a 400 if the subscription is unsuccessful
 pub async fn subscribe(
-    newsletter_app_service: web::Data<NewsletterAppService>,
+    newsletter_app_service: web::Data<NewsletterAppService<NewsletterPostGresRepository>>,
     user: web::Form<User>,
 ) -> impl Responder {
     // unpack the form data and print
     let str = format!("Hello to Prodcast {}, {}", user.name(), user.email());
     // save the user to the database
-    newsletter_app_service.save_user(user.into_inner()).unwrap();
-    HttpResponse::Ok().body(str)
+    newsletter_app_service
+        .save_user(user.into_inner())
+        .await
+        // return 500 if the user could not be saved or 200 if the user was saved
+        .map(|_| HttpResponse::Ok().body(str))
+        .unwrap_or_else(|e| {
+            eprintln!("Failed to save user: {:?}", e);
+            HttpResponse::InternalServerError().finish()
+        })
 }
 
 /// Health check endpoint

@@ -7,19 +7,27 @@ pub mod routes;
 pub mod service;
 use std::net::TcpListener;
 
-use crate::repository::newsletter::NewsletterRepository;
+use crate::repository::newsletter::NewsletterPostGresRepository;
 use crate::service::newsletter::NewsletterAppService;
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpServer};
+use config::app::Settings;
 use routes::api::greet;
 use routes::api::healthz;
 use routes::api::subscribe;
 use std::sync::Arc;
 
 /// Run the server
-pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
+pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
+    // get the connection string
+    let connection_string = configuration.database.connection_string();
+    // create a connection pool
+    let connection_pool = sqlx::PgPool::connect(&connection_string)
+        .await
+        .expect("Failed to create connection pool.");
+
     // create the newsletter repository
-    let newsletter_repository = NewsletterRepository::default();
+    let newsletter_repository = NewsletterPostGresRepository::new(connection_pool);
     // create the newsletter app service
     let newsletter_app_service = Arc::new(NewsletterAppService::new(newsletter_repository));
 
