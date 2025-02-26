@@ -1,7 +1,7 @@
 /// handle all business logic for newsletter
 // add a trait to save the user that calls the repository to save the user
 use crate::models::newsletter::User;
-use crate::repository::newsletter::{NewsletterRepository, UserRepository};
+use crate::repository::newsletter::NewsletterRepository;
 
 pub trait UserService {
     // Save the user to the repository
@@ -10,17 +10,18 @@ pub trait UserService {
     fn get_user(&self, email: String) -> Result<User, String>;
 }
 
-pub struct NewsletterAppService {
-    repository: NewsletterRepository,
+// struct to handle all the business logic for the newsletter
+pub struct NewsletterAppService<T: NewsletterRepository> {
+    repository: T,
 }
 
-impl NewsletterAppService {
-    pub fn new(repository: NewsletterRepository) -> Self {
+impl<T: NewsletterRepository> NewsletterAppService<T> {
+    pub fn new(repository: T) -> Self {
         NewsletterAppService { repository }
     }
 }
 
-impl UserService for NewsletterAppService {
+impl<T: NewsletterRepository> UserService for NewsletterAppService<T> {
     /// Save the user to the repository
     fn save_user(&self, user: User) -> Result<(), String> {
         self.repository.save_user(user)

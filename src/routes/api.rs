@@ -1,4 +1,5 @@
 use crate::models::newsletter::User;
+use crate::repository::newsletter::NewsletterPostGresRepository;
 use crate::service::lang::hello;
 use crate::service::newsletter::{NewsletterAppService, UserService};
 use actix_web::{web, HttpRequest, HttpResponse, Responder};
@@ -8,7 +9,7 @@ use actix_web::{web, HttpRequest, HttpResponse, Responder};
 /// It will return a 200 if the subscription is successful
 /// It will return a 400 if the subscription is unsuccessful
 pub async fn subscribe(
-    newsletter_app_service: web::Data<NewsletterAppService>,
+    newsletter_app_service: web::Data<NewsletterAppService<NewsletterPostGresRepository>>,
     user: web::Form<User>,
 ) -> impl Responder {
     // unpack the form data and print

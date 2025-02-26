@@ -1678,6 +1678,8 @@ dependencies = [
  "serde 1.0.218",
  "sqlx",
  "tokio",
+ "url",
+ "uuid",
 ]
 
 [[package]]
@@ -2710,6 +2712,9 @@ name = "uuid"
 version = "1.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "93d59ca99a559661b96bf898d8fce28ed87935fd2bea9f05983c1464dd6c71b1"
+dependencies = [
+ "getrandom 0.3.1",
+]
 
 [[package]]
 name = "vcpkg"
