@@ -265,6 +265,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
+name = "async-trait"
+version = "0.1.86"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "644dd749086bf3771a2fbc5f256fdb982d53f011c7d5d560304eafeecebce79d"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "atoi"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -409,7 +420,9 @@ checksum = "7e36cc9d416881d2e24f9a963be5fb1cd90966419ac844274161d10488b3e825"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
+ "js-sys",
  "num-traits 0.2.19",
+ "wasm-bindgen",
  "windows-targets 0.52.6",
 ]
 
@@ -1673,6 +1686,8 @@ name = "prodcast"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "async-trait",
+ "chrono",
  "config",
  "reqwest",
  "serde 1.0.218",

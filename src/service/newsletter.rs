@@ -3,13 +3,6 @@
 use crate::models::newsletter::User;
 use crate::repository::newsletter::NewsletterRepository;
 
-pub trait UserService {
-    // Save the user to the repository
-    fn save_user(&self, user: User) -> Result<(), String>;
-    // Get the user from the repository
-    fn get_user(&self, email: String) -> Result<User, String>;
-}
-
 // struct to handle all the business logic for the newsletter
 pub struct NewsletterAppService<T: NewsletterRepository> {
     repository: T,
@@ -21,14 +14,20 @@ impl<T: NewsletterRepository> NewsletterAppService<T> {
     }
 }
 
-impl<T: NewsletterRepository> UserService for NewsletterAppService<T> {
+impl<T: NewsletterRepository> NewsletterAppService<T> {
     /// Save the user to the repository
-    fn save_user(&self, user: User) -> Result<(), String> {
-        self.repository.save_user(user)
+    pub async fn save_user(&self, user: User) -> Result<(), String> {
+        self.repository.save_user(user).await.map_err(|e| {
+            eprintln!("Failed to save user: {:?}", e);
+            "Failed to save user".to_string()
+        })
     }
 
     /// Get the user from the repository
-    fn get_user(&self, email: String) -> Result<User, String> {
-        self.repository.get_user(email)
+    pub async fn get_user(&self, email: String) -> Result<User, String> {
+        self.repository.get_user(email).await.map_err(|e| {
+            eprintln!("Failed to get user: {:?}", e);
+            "Failed to get user".to_string()
+        })
     }
 }
