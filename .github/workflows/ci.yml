@@ -40,7 +40,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
+            target/debug/build
+            target/debug/incremental
           key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             cargo-${{ runner.os }}-
@@ -123,7 +124,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
+            target/debug/build
+            target/debug/incremental
           key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             cargo-${{ runner.os }}-
