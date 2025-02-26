@@ -13,19 +13,40 @@ async fn create_test_database(config: &DatabaseSettings) -> Result<(), sqlx::Err
         .password(&config.password)
         // connect to the default postgres database
         .database("postgres");
-    let mut connection = PgConnection::connect_with(&connect_options)
+    let mut default_conn = PgConnection::connect_with(&connect_options)
         .await
         .expect("Failed to connect to Postgres");
-    connection
+    default_conn
         .execute(&*format!(r#"CREATE DATABASE "{}";"#, config.database))
         .await
         .expect("Failed to create database");
 
+    // close the connection
+    default_conn
+        .close()
+        .await
+        .expect("Failed to close connection");
+    // create a new connection to the test database
+    let connect_options = PgConnectOptions::new()
+        .host(&config.host)
+        .port(config.port)
+        .username(&config.user)
+        .password(&config.password)
+        .database(&config.database);
+    let mut test_db_conn = PgConnection::connect_with(&connect_options)
+        .await
+        .expect("Failed to connect to Postgres");
+
     // run the migrations using the same connection
     migrate!("./migrations")
-        .run(&mut connection)
+        .run(&mut test_db_conn)
         .await
         .expect("Failed to migrate the database");
+    // close the connection
+    test_db_conn
+        .close()
+        .await
+        .expect("Failed to close connection");
     Ok(())
     // return the connection as a result or an error
 }
