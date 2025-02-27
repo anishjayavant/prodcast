@@ -25,7 +25,7 @@ WORKDIR /app
 # Copy the binary from the builder stage
 COPY --from=builder /app/target/release/prodcast /app/prodcast
 # Copy the config.yml file
-COPY --from=builder /app/config .
+COPY --from=builder /app/config /app/config
 # Set the entrypoint
 ENTRYPOINT ["/app/prodcast"]
 
