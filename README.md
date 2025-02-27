@@ -68,6 +68,19 @@ The `tests` directory is structured accordingly and contains unit and integratio
    Alternatively, run the whole stack (Postgres, sqlx migrations and prodcast) using Docker Compose
    ```sh
    docker-compose -f docker/prodcast.yml up --build -d
+   postgres  | 2025-02-27 05:26:51.870 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+    postgres  | 2025-02-27 05:26:51.870 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+    postgres  | 2025-02-27 05:26:51.875 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+    postgres  | 2025-02-27 05:26:51.893 UTC [30] FATAL:  the database system is starting up
+    sqlx      | error: error returned from database: the database system is starting up
+    postgres  | 2025-02-27 05:26:51.895 UTC [29] LOG:  database system was shut down at 2025-02-27 05:24:50 UTC
+    postgres  | 2025-02-27 05:26:51.910 UTC [1] LOG:  database system is ready to accept connections
+    sqlx exited with code 1
+    prodcast  | [2025-02-27T05:26:52Z WARN  prodcast] Current working directory: "/app"
+    prodcast  | [2025-02-27T05:26:52Z INFO  actix_server::builder] starting 2 workers
+    prodcast  | [2025-02-27T05:26:52Z INFO  prodcast] Prodcast initialized..
+    prodcast  | [2025-02-27T05:26:52Z INFO  actix_server::server] Tokio runtime found; starting in existing Tokio runtime
+    prodcast  | [2025-02-27T05:26:52Z INFO  actix_server::server] starting service: "actix-web-service-0.0.0.0:8000", workers: 2, listening on: 0.0.0.0:8000
    ```
 
 ## Usage
