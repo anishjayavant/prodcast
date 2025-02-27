@@ -65,6 +65,10 @@ The `tests` directory is structured accordingly and contains unit and integratio
     [2025-02-27T00:01:19Z INFO  actix_server::server] Tokio runtime found; starting in existing Tokio runtime
     [2025-02-27T00:01:19Z INFO  actix_server::server] starting service: "actix-web-service-127.0.0.1:8000", workers: 2, listening on: 127.0.0.1:8000
    ```
+   Alternatively, run the whole stack (Postgres, sqlx migrations and prodcast) using Docker Compose
+   ```sh
+   docker-compose -f docker/prodcast.yml up --build -d
+   ```
 
 ## Usage
 
