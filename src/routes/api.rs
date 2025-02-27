@@ -15,13 +15,16 @@ pub async fn subscribe(
 ) -> impl Responder {
     // Generate a request ID
     let request_id = Uuid::new_v4();
-    // log the request ID using tracing
-    tracing::info!(
-        "request_id: {}, adding username: {}, email: {} as a new subscriber",
-        request_id,
-        user.name(),
-        user.email()
+    // open a new span
+    let request_span = tracing::info_span!(
+            "Adding a new subscriber",
+        %request_id,
+        subscriber_name = %user.name(),
+        subscriber_email = %user.email()
     );
+    // enter the span
+    let _request_span_guard = request_span.enter();
+
     // unpack the form data and print
     let user_str = format!("User name: {}, email: {}", user.name(), user.email());
     let str = format!("Hello to Prodcast {}, {}", user.name(), user.email());
@@ -36,7 +39,7 @@ pub async fn subscribe(
             HttpResponse::Ok().body(str)
         })
         .unwrap_or_else(|e| {
-            log::error!("request id: {}, failed to save user: {:?}", request_id, e);
+            tracing::error!("request id: {}, failed to save user: {:?}", request_id, e);
             HttpResponse::InternalServerError().finish()
         })
 }

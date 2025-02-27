@@ -43,6 +43,6 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     .listen(listener)?
     .run();
     // return the server
-    log::info!("Prodcast initialized..");
+    tracing::info!("Prodcast initialized..");
     Ok(server)
 }

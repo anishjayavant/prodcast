@@ -9,7 +9,7 @@ async fn main() -> std::io::Result<()> {
     // Initialize logger
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     // log current working directory
-    log::warn!(
+    tracing::warn!(
         "Current working directory: {:?}",
         std::env::current_dir().unwrap()
     );
