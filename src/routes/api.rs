@@ -47,6 +47,12 @@ pub async fn subscribe(
 /// Health check endpoint
 pub async fn healthz() -> impl Responder {
     let request_id = Uuid::new_v4();
+    let request_span = tracing::info_span!(
+            "Health check",
+        %request_id,
+    );
+    // enter the span
+    let _request_span_guard = request_span.enter();
     tracing::info!("request_id: {}, health check", request_id);
     HttpResponse::Ok().finish()
 }
@@ -54,6 +60,11 @@ pub async fn healthz() -> impl Responder {
 /// Greet the user
 pub async fn greet(req: HttpRequest) -> impl Responder {
     let request_id = Uuid::new_v4();
+    let request_span = tracing::info_span!(
+            "Greeting user",
+        %request_id,
+    );
+    let _request_span_guard = request_span.enter();
     tracing::info!("request_id: {}, greeting user", request_id);
     let name = req.match_info().get("name").unwrap_or("World");
     hello();
