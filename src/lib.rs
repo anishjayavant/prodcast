@@ -23,9 +23,8 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     // get the connection string
     let connection_string = configuration.database.connection_string();
     // create a connection pool
-    let connection_pool = sqlx::PgPool::connect(&connection_string)
-        .await
-        .expect("Failed to create connection pool.");
+    let connection_pool =
+        sqlx::PgPool::connect_lazy(&connection_string).expect("Failed to create connection pool.");
 
     // create the newsletter repository
     let newsletter_repository = NewsletterPostGresRepository::new(connection_pool);

@@ -1,7 +1,7 @@
-# config.yml
-port: 8000
+# base settings
+application:
+  port: 8000  
 database:
-  host: localhost
   port: 5432
   user: prodcast
   password: password

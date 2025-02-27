@@ -1,0 +1,5 @@
+# Settings for local run using docker-compose
+application:
+  host: 0.0.0.0
+database:
+  host: postgres

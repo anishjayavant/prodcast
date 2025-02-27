@@ -1,5 +1,5 @@
 //! utils.rs
-use prodcast::config::app::{DatabaseSettings, Settings};
+use prodcast::config::app::{AppSettings, DatabaseSettings, Settings};
 use sqlx::{migrate, postgres::PgConnectOptions, Connection, Executor, PgConnection};
 use std::net::TcpListener;
 use uuid::Uuid;
@@ -81,7 +81,10 @@ pub fn get_test_config(port: u16, database_name: &str) -> Settings {
             password: "password".to_string(),
             database: String::from(database_name),
         },
-        port,
+        application: AppSettings {
+            port,
+            host: "127.0.0.1".to_string(),
+        },
     }
 }
 
