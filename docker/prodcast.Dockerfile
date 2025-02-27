@@ -1,13 +1,8 @@
 FROM rust:latest AS builder
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    pkg-config \
-    build-essential \
-    curl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install lld clang -y
+
+ENV SQLX_OFFLINE true
 
 # Build the project
 WORKDIR /app
@@ -17,12 +12,20 @@ RUN cargo build --release
 
 # Use a minimal Debian base with GLIBC 2.36
 FROM debian:bookworm-slim
+
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends openssl ca-certificates \
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+    
 # Copy the binary from the builder stage
-COPY --from=builder /app/target/release/prodcast /usr/local/bin/prodcast
+COPY --from=builder /app/target/release/prodcast /app/prodcast
 # Copy the config.yml file
-COPY --from=builder /app/config.yml /usr/local/bin/config.yml
-# Set permissions
-RUN chmod +x /usr/local/bin/prodcast
+COPY --from=builder /app/config /app/config
 # Set the entrypoint
-ENTRYPOINT ["prodcast"]
+ENTRYPOINT ["/app/prodcast"]
 

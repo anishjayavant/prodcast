@@ -55,6 +55,8 @@ jobs:
         run: DATABASE_URL=postgres://prodcast:password@localhost/newsletter sqlx migrate run
       - name: Test
         run: cargo test --all-features
+      - name: Check that queries are fresh
+        run: cargo sqlx prepare --workspace --check -- --all-targets
 
   fmt:
     name: Fmt
