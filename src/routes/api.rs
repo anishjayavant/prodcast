@@ -3,7 +3,6 @@ use crate::repository::newsletter::NewsletterPostGresRepository;
 use crate::service::lang::hello;
 use crate::service::newsletter::NewsletterAppService;
 use actix_web::{web, HttpRequest, HttpResponse, Responder};
-use uuid::Uuid;
 
 /// Subscribe endpoint
 /// This function will subscribe a user to the service
@@ -13,7 +12,6 @@ use uuid::Uuid;
     name = "Adding a new subscriber",
     skip(newsletter_app_service, user),
     fields(
-        request_id = %Uuid::new_v4(),
         subscriber_email = %user.email(),
         subscriber_name= %user.name()
     )
@@ -41,24 +39,14 @@ pub async fn subscribe(
 }
 
 /// Health check endpoint
-#[tracing::instrument(
-    name = "Health check",    
-    fields(
-        request_id = %Uuid::new_v4(),
-    )
-)]
+#[tracing::instrument(name = "Health check")]
 pub async fn healthz() -> impl Responder {
     tracing::info!("Health check");
     HttpResponse::Ok().finish()
 }
 
 /// Greet the user
-#[tracing::instrument(
-    name = "Greeting user",
-    fields(
-        request_id = %Uuid::new_v4(),
-    )
-)]
+#[tracing::instrument(name = "Greeting user")]
 pub async fn greet(req: HttpRequest) -> impl Responder {
     tracing::info!("Greeting user");
     let name = req.match_info().get("name").unwrap_or("World");
