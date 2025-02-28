@@ -25,7 +25,7 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     // get the connection string
     let connection_string = configuration.database.connection_string();
     // create a connection pool
-    let connection_pool = sqlx::PgPool::connect_lazy(&connection_string.expose_secret())
+    let connection_pool = sqlx::PgPool::connect_lazy(connection_string.expose_secret())
         .expect("Failed to create connection pool.");
 
     // create the newsletter repository

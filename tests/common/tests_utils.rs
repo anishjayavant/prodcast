@@ -85,7 +85,7 @@ pub fn initialize_pg_connect_options(
         .host(&config.host)
         .port(config.port)
         .username(&config.user)
-        .password(&config.password.expose_secret())
+        .password(config.password.expose_secret())
         // connect to the default postgres database
         .database(&database_name)
 }
