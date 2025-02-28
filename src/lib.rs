@@ -5,6 +5,7 @@ pub mod models;
 pub mod repository;
 pub mod routes;
 pub mod service;
+pub mod telemetry;
 use std::net::TcpListener;
 
 use crate::repository::newsletter::NewsletterPostGresRepository;
