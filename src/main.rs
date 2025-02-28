@@ -7,7 +7,7 @@ use std::net::TcpListener;
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     // Initialize tracing
-    let subscriber = get_subscriber("prodcast".into(), "info".into());
+    let subscriber = get_subscriber("prodcast".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
 
     // log current working directory
