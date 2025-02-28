@@ -2,6 +2,7 @@
 use once_cell::sync::Lazy;
 use prodcast::config::app::{AppSettings, DatabaseSettings, Settings};
 use prodcast::telemetry::tracing::{get_subscriber, init_subscriber};
+use secrecy::{ExposeSecret, Secret};
 use sqlx::{migrate, postgres::PgConnectOptions, Connection, Executor, PgConnection};
 use std::net::TcpListener;
 use uuid::Uuid;
@@ -84,7 +85,7 @@ pub fn initialize_pg_connect_options(
         .host(&config.host)
         .port(config.port)
         .username(&config.user)
-        .password(&config.password)
+        .password(&config.password.expose_secret())
         // connect to the default postgres database
         .database(&database_name)
 }
@@ -96,7 +97,7 @@ pub fn get_test_config(port: u16, database_name: &str) -> Settings {
             host: "localhost".to_string(),
             port: 5432,
             user: "prodcast".to_string(),
-            password: "password".to_string(),
+            password: Secret::new("password".to_string()),
             database: String::from(database_name),
         },
         application: AppSettings {

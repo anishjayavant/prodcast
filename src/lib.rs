@@ -17,6 +17,7 @@ use config::app::Settings;
 use routes::api::greet;
 use routes::api::healthz;
 use routes::api::subscribe;
+use secrecy::ExposeSecret;
 use std::sync::Arc;
 
 /// Run the server
@@ -24,8 +25,8 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     // get the connection string
     let connection_string = configuration.database.connection_string();
     // create a connection pool
-    let connection_pool =
-        sqlx::PgPool::connect_lazy(&connection_string).expect("Failed to create connection pool.");
+    let connection_pool = sqlx::PgPool::connect_lazy(&connection_string.expose_secret())
+        .expect("Failed to create connection pool.");
 
     // create the newsletter repository
     let newsletter_repository = NewsletterPostGresRepository::new(connection_pool);
