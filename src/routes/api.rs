@@ -8,64 +8,59 @@ use uuid::Uuid;
 /// Subscribe endpoint
 /// This function will subscribe a user to the service
 /// It will return a 200 if the subscription is successful
-/// It will return a 400 if the subscription is unsuccessful
+/// It will return a 500 if the subscription is unsuccessful
+#[tracing::instrument(
+    name = "Adding a new subscriber",
+    skip(newsletter_app_service, user),
+    fields(
+        request_id = %Uuid::new_v4(),
+        subscriber_email = %user.email(),
+        subscriber_name= %user.name()
+    )
+)]
 pub async fn subscribe(
     newsletter_app_service: web::Data<NewsletterAppService<NewsletterPostGresRepository>>,
     user: web::Form<User>,
 ) -> impl Responder {
-    // Generate a request ID
-    let request_id = Uuid::new_v4();
-    // open a new span
-    let request_span = tracing::info_span!(
-            "Adding a new subscriber",
-        %request_id,
-        subscriber_name = %user.name(),
-        subscriber_email = %user.email()
-    );
-    // enter the span
-    let _request_span_guard = request_span.enter();
-
-    // unpack the form data and print
     let user_str = format!("User name: {}, email: {}", user.name(), user.email());
     let str = format!("Hello to Prodcast {}, {}", user.name(), user.email());
     // save the user to the database
-    tracing::info!("request id: {}, saving user: {}", request_id, user_str);
+    tracing::info!("Saving user: {}", user_str);
     newsletter_app_service
         .save_user(user.into_inner())
         .await
         // return 500 if the user could not be saved or 200 if the user was saved
         .map(|_| {
-            tracing::info!("request id: {}, user saved: {}", request_id, user_str);
+            tracing::info!("User saved: {}", user_str);
             HttpResponse::Ok().body(str)
         })
         .unwrap_or_else(|e| {
-            tracing::error!("request id: {}, failed to save user: {:?}", request_id, e);
+            tracing::error!("Failed to save user: {:?}", e);
             HttpResponse::InternalServerError().finish()
         })
 }
 
 /// Health check endpoint
+#[tracing::instrument(
+    name = "Health check",    
+    fields(
+        request_id = %Uuid::new_v4(),
+    )
+)]
 pub async fn healthz() -> impl Responder {
-    let request_id = Uuid::new_v4();
-    let request_span = tracing::info_span!(
-            "Health check",
-        %request_id,
-    );
-    // enter the span
-    let _request_span_guard = request_span.enter();
-    tracing::info!("request_id: {}, health check", request_id);
+    tracing::info!("Health check");
     HttpResponse::Ok().finish()
 }
 
 /// Greet the user
+#[tracing::instrument(
+    name = "Greeting user",
+    fields(
+        request_id = %Uuid::new_v4(),
+    )
+)]
 pub async fn greet(req: HttpRequest) -> impl Responder {
-    let request_id = Uuid::new_v4();
-    let request_span = tracing::info_span!(
-            "Greeting user",
-        %request_id,
-    );
-    let _request_span_guard = request_span.enter();
-    tracing::info!("request_id: {}, greeting user", request_id);
+    tracing::info!("Greeting user");
     let name = req.match_info().get("name").unwrap_or("World");
     hello();
     format!("Hello {}!", &name)
