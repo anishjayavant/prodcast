@@ -7,6 +7,7 @@ pub mod routes;
 pub mod service;
 pub mod telemetry;
 use std::net::TcpListener;
+use std::time::Duration;
 
 use crate::repository::newsletter::NewsletterPostGresRepository;
 use crate::service::newsletter::NewsletterAppService;
@@ -17,6 +18,7 @@ use routes::api::greet;
 use routes::api::healthz;
 use routes::api::subscribe;
 use secrecy::ExposeSecret;
+use sqlx::postgres::PgPoolOptions;
 use std::sync::Arc;
 use tracing_actix_web::TracingLogger;
 
@@ -24,8 +26,12 @@ use tracing_actix_web::TracingLogger;
 pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
     // get the connection string
     let connection_string = configuration.database.connection_string();
-    // create a connection pool
-    let connection_pool = sqlx::PgPool::connect_lazy(connection_string.expose_secret())
+    // create a connection pool with options
+    let connection_pool = PgPoolOptions::new()
+        .acquire_timeout(Duration::from_secs(
+            configuration.database.connect_timeout_secs,
+        ))
+        .connect_lazy(connection_string.expose_secret())
         .expect("Failed to create connection pool.");
 
     // create the newsletter repository

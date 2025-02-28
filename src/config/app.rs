@@ -8,6 +8,7 @@ pub struct DatabaseSettings {
     pub user: String,
     pub password: Secret<String>,
     pub database: String,
+    pub connect_timeout_secs: u64,
 }
 
 #[derive(serde::Deserialize)]
