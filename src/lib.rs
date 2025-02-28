@@ -5,6 +5,7 @@ pub mod models;
 pub mod repository;
 pub mod routes;
 pub mod service;
+pub mod telemetry;
 use std::net::TcpListener;
 
 use crate::repository::newsletter::NewsletterPostGresRepository;
@@ -43,6 +44,6 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     .listen(listener)?
     .run();
     // return the server
-    log::info!("Prodcast initialized..");
+    tracing::info!("Prodcast initialized..");
     Ok(server)
 }

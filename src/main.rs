@@ -1,15 +1,17 @@
 //! main.rs
-use env_logger::Env;
 use prodcast::config::app::get_configuration;
 use prodcast::run;
+use prodcast::telemetry::tracing::{get_subscriber, init_subscriber};
 use std::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    // Initialize logger
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+    // Initialize tracing
+    let subscriber = get_subscriber("prodcast".into(), "info".into());
+    init_subscriber(subscriber);
+
     // log current working directory
-    log::warn!(
+    tracing::warn!(
         "Current working directory: {:?}",
         std::env::current_dir().unwrap()
     );

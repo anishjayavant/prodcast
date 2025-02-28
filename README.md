@@ -32,6 +32,9 @@ The `tests` directory is structured accordingly and contains unit and integratio
 - [Rust](https://www.rust-lang.org/tools/install)
 - [Docker](https://docs.docker.com/get-docker/) (optional, for containerized deployment)
 
+> [!NOTE]
+> A full Rust development environment with all batteries included can be spun up using instructions [here](https://github.com/anishjayavant/vagrant-provisioners?tab=readme-ov-file#start-development-environment-script)
+
 ### Installation
 
 1. Clone the repository:
