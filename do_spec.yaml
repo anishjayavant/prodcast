@@ -1,6 +1,16 @@
 #! spec.yaml
 name: prodcast
 region: nyc
+# databases
+databases:
+  - engine: PG
+    # DB name
+    name: newsletter
+    # PG version
+    version: "15"
+    # use minimal sizing
+    size: db-s-dev-database
+    num_nodes: 1
 services:
   - name: prodcast
     # Relative to the repository root
