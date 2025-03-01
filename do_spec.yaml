@@ -34,7 +34,7 @@ services:
       - key: APP_ENV
         scope: RUN_TIME
         value: prod
-      - key: APP_DATABASE__USERNAME
+      - key: APP_DATABASE__USER
         scope: RUN_TIME
         value: ${newsletter.USERNAME}
       - key: APP_DATABASE__PASSWORD
