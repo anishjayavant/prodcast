@@ -12,6 +12,25 @@ databases:
     size: db-s-dev-database
     num_nodes: 1
 services:
+  - name: migrations
+    # Relative to the repository root
+    dockerfile_path: docker/sqlx.Dockerfile
+    source_dir: .
+    github:
+      repo: anishjayavant/prodcast
+      branch: main
+      deploy_on_push: true
+    # Environment variables for our app
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: postgres://${newsletter.USERNAME}:${newsletter.PASSWORD}@${newsletter.HOSTNAME}:${newsletter.PORT}/${newsletter.DATABASE}?sslmode=require
+    # Command to run the migrations
+    command: ["migrate", "run"]
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    # We don't need to expose this service to the internet
+    routes: []
   - name: prodcast
     # Relative to the repository root
     dockerfile_path: docker/prodcast.Dockerfile
@@ -49,4 +68,3 @@ services:
       - key: APP_DATABASE__DATABASE_NAME
         scope: RUN_TIME
         value: ${newsletter.DATABASE}
-      
