@@ -1,0 +1,21 @@
+#! spec.yaml
+name: prodcast
+region: nyc
+services:
+  - name: prodcast
+    # Relative to the repository root
+    dockerfile_path: docker/prodcast.Dockerfile
+    source_dir: .
+    github:
+      repo: anishjayavant/prodcast
+      branch: main
+      deploy_on_push: true
+    # Active probe used by DigitalOcean's to ensure our application is healthy
+    health_check:
+      http_path: /healthz
+    http_port: 8000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    # All incoming requests should be routed to our app
+    routes:
+      - path: /
