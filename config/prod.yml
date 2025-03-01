@@ -3,3 +3,4 @@ application:
   host: 0.0.0.0
 database:
   host: postgres-host-tbd
+  ssl_mode: true

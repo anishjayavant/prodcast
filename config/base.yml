@@ -7,3 +7,4 @@ database:
   password: password
   database: newsletter
   connect_timeout_secs: 2
+  ssl_mode: false
