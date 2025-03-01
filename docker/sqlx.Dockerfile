@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install SQLx CLI
-RUN cargo install sqlx-cli --no-default-features --features postgres
+RUN cargo install sqlx-cli --no-default-features --features postgres,rustls
 
 # Use a minimal Debian base with GLIBC 2.36
 FROM debian:bookworm-slim
