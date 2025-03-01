@@ -19,3 +19,7 @@ services:
     # All incoming requests should be routed to our app
     routes:
       - path: /
+    # Environment variables for our app
+    envs:
+      - key: APP_ENV
+        value: prod
