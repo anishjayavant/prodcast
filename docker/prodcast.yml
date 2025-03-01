@@ -16,11 +16,9 @@ services:
   # sqlx CLI service using local image
   sqlx:
     build:
-      context: .
-      dockerfile: sqlx.Dockerfile
-    container_name: sqlx
-    volumes:
-      - ../migrations:/app/migrations
+      context: ..
+      dockerfile: ./docker/sqlx.Dockerfile
+    container_name: sqlx    
     working_dir: /app
     depends_on:
       - postgres

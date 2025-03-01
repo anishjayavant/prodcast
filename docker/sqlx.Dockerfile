@@ -23,4 +23,7 @@ RUN chmod +x /usr/local/bin/sqlx
 
 WORKDIR /app
 
+# Copy the migrations directory
+COPY migrations migrations
+
 ENTRYPOINT ["sqlx"]
