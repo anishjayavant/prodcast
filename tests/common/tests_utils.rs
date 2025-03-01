@@ -99,6 +99,7 @@ pub fn get_test_config(port: u16, database_name: &str) -> Settings {
             user: "prodcast".to_string(),
             password: Secret::new("password".to_string()),
             database: String::from(database_name),
+            connect_timeout_secs: 2,
         },
         application: AppSettings {
             port,

@@ -6,3 +6,4 @@ database:
   user: prodcast
   password: password
   database: newsletter
+  connect_timeout_secs: 2
