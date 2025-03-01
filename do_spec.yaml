@@ -11,7 +11,7 @@ databases:
     # use minimal sizing
     size: db-s-dev-database
     num_nodes: 1
-services:
+workers:
   - name: migrations
     # Relative to the repository root
     dockerfile_path: docker/sqlx.Dockerfile
@@ -26,11 +26,10 @@ services:
         scope: RUN_TIME
         value: postgres://${newsletter.USERNAME}:${newsletter.PASSWORD}@${newsletter.HOSTNAME}:${newsletter.PORT}/${newsletter.DATABASE}?sslmode=require
     # Command to run the migrations
-    command: ["migrate", "run"]
+    run_command: migrate run
     instance_count: 1
-    instance_size_slug: basic-xxs
-    # We don't need to expose this service to the internet
-    routes: []
+    instance_size_slug: basic-xxs    
+services:
   - name: prodcast
     # Relative to the repository root
     dockerfile_path: docker/prodcast.Dockerfile
