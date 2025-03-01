@@ -32,4 +32,21 @@ services:
     # Environment variables for our app
     envs:
       - key: APP_ENV
+        scope: RUN_TIME
         value: prod
+      - key: APP_DATABASE__USERNAME
+        scope: RUN_TIME
+        value: ${newsletter.USERNAME}
+      - key: APP_DATABASE__PASSWORD
+        scope: RUN_TIME
+        value: ${newsletter.PASSWORD}
+      - key: APP_DATABASE__HOST
+        scope: RUN_TIME
+        value: ${newsletter.HOST}
+      - key: APP_DATABASE__PORT
+        scope: RUN_TIME
+        value: ${newsletter.PORT}
+      - key: APP_DATABASE__DATABASE_NAME
+        scope: RUN_TIME
+        value: ${newsletter.DATABASE}
+      
