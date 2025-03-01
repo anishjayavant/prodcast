@@ -17,6 +17,9 @@ async fn main() -> std::io::Result<()> {
     );
     // Read configuration
     let configuration = get_configuration().expect("Failed to read configuration.");
+    // log the merged configuration settings
+    tracing::info!("Prodcast DB host {}", configuration.database.host);
+    tracing::info!("Prodcast DB port {}", configuration.database.port);
     let address = format!(
         "{}:{}",
         configuration.application.host, configuration.application.port
