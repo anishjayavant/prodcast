@@ -11,6 +11,7 @@ pub struct DatabaseSettings {
     pub password: Secret<String>,
     pub database: String,
     pub connect_timeout_secs: u64,
+    pub ssl_mode: bool,
 }
 
 #[derive(serde::Deserialize)]
@@ -48,24 +49,36 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 
 impl DatabaseSettings {
     pub fn connection_string(&self) -> Secret<String> {
-        Secret::new(format!(
+        let mut connection_url = format!(
             "postgres://{}:{}@{}:{}/{}",
             self.user,
             self.password.expose_secret(),
             self.host,
             self.port,
             self.database
-        ))
+        );
+
+        if self.ssl_mode {
+            connection_url.push_str("?sslmode=require");
+        }
+
+        Secret::new(connection_url)
     }
 
     pub fn connection_string_without_db(&self) -> Secret<String> {
-        Secret::new(format!(
-            "postgres://{}:{}@{}:{}",
+        let mut connection_url = format!(
+            "postgres://{}:{}@{}:{}/",
             self.user,
             self.password.expose_secret(),
             self.host,
             self.port
-        ))
+        );
+
+        if self.ssl_mode {
+            connection_url.push_str("?sslmode=require");
+        }
+
+        Secret::new(connection_url)
     }
 }
 
