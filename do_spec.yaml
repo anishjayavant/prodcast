@@ -26,7 +26,7 @@ workers:
         scope: RUN_TIME
         value: postgres://${newsletter.USERNAME}:${newsletter.PASSWORD}@${newsletter.HOSTNAME}:${newsletter.PORT}/${newsletter.DATABASE}?sslmode=require
     # Command to run the migrations
-    run_command: migrate run
+    run_command: sqlx migrate run
     instance_count: 1
     instance_size_slug: basic-xxs    
 services:
