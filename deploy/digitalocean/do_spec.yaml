@@ -7,7 +7,7 @@ databases:
     # DB name
     name: newsletter
     # PG version
-    version: "15"
+    version: "14"
     # use minimal sizing
     size: db-s-dev-database
     num_nodes: 1
