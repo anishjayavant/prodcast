@@ -35,7 +35,7 @@ impl NewsletterRepository for NewsletterPostGresRepository {
         tracing::info!("Saving the user {} to the database", user.email());
         sqlx::query!(
             r#"
-            INSERT INTO subscriptions (id, email, name, subscribed_at)
+            INSERT INTO newsletter.subscriptions (id, email, name, subscribed_at)
             VALUES ($1, $2, $3, $4)
             "#,
             Uuid::new_v4(),
@@ -66,13 +66,16 @@ impl NewsletterRepository for NewsletterPostGresRepository {
     async fn get_user(&self, email: String) -> Result<User, String> {
         // get the user from the database
         tracing::info!("Getting the user {} from the database", email);
-        sqlx::query!("SELECT email, name FROM subscriptions",)
-            .fetch_one(&self.connection_pool)
-            .await
-            .map(|row| User::new(row.email, row.name))
-            .map_err(|e| {
-                tracing::error!("Failed to execute query: {:?}", e);
-                "Failed to get user".to_string()
-            })
+        sqlx::query!(
+            "SELECT email, name FROM newsletter.subscriptions where email = $1",
+            email
+        )
+        .fetch_one(&self.connection_pool)
+        .await
+        .map(|row| User::new(row.email, row.name))
+        .map_err(|e| {
+            tracing::error!("Failed to execute query: {:?}", e);
+            "Failed to get user".to_string()
+        })
     }
 }
