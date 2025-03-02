@@ -24,7 +24,7 @@ workers:
     envs:
       - key: DATABASE_URL
         scope: RUN_TIME
-        value: postgres://${newsletter.USERNAME}:${newsletter.PASSWORD}@${newsletter.HOSTNAME}:${newsletter.PORT}/${newsletter.DATABASE}?sslmode=require
+        value: "postgres://${newsletter.USERNAME}:${newsletter.PASSWORD}@${newsletter.HOSTNAME}:${newsletter.PORT}/${newsletter.DATABASE}?sslmode=require&options=--search_path%3dnewsletter_migrations"
     # Command to run the migrations
     run_command: sqlx migrate run
     instance_count: 1
